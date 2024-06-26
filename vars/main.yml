@@ -1,0 +1,3 @@
+---
+jenkins_url: "http://updates.jenkins-ci.org/download/war/{{ jenkins_version }}/jenkins.war"
+jenkins_install_dir: "/opt/jenkins"
