@@ -9,7 +9,7 @@
   tags: ['skip_ansible_lint']
 
 - name: Set Jenkins admin password fact.
-  set_fact:
+  ansible.builtin.set_fact:
     jenkins_admin_password: "{{ adminpasswordfile['stdout'] | default(jenkins_admin_password) }}"
   no_log: true
 
@@ -20,7 +20,7 @@
     state: directory
     owner: jenkins
     group: jenkins
-    mode: 0755
+    mode: "0600"
 
 - name: Download current plugin updates from Jenkins update site.
   ansible.builtin.get_url:
@@ -28,7 +28,7 @@
     dest: "{{ jenkins_home }}/updates/default.json"
     owner: jenkins
     group: jenkins
-    mode: 0440
+    mode: "0600"
   changed_when: false
   register: get_result
   until: get_result is success
@@ -36,7 +36,7 @@
   delay: 2
 
 - name: Remove first and last line from json file.
-  ansible.builtin.replace:  # noqa 208
+  ansible.builtin.replace:
     path: "{{ jenkins_home }}/updates/default.json"
     regexp: "1d;$d"
 

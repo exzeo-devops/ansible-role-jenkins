@@ -19,7 +19,7 @@
     owner: "{{ jenkins_process_user }}"
     group: "{{ jenkins_process_group }}"
     mode: '0644'
-  notify: configure default users    
+  notify: Configure default users
 
 - name: Create systemd service file for Jenkins
   ansible.builtin.template:
@@ -29,7 +29,7 @@
     group: "{{ jenkins_process_group }}"
     mode: "0664"
   notify:
-    - restart jenkins
+    - Restart jenkins
 
 - name: Ensure Jenkins directory ownership
   ansible.builtin.file:

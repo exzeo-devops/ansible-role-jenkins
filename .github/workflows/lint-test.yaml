@@ -14,10 +14,11 @@ concurrency:
 
 jobs:
   lint:
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@DOPS-6154 # v1.0.23
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit
 
   test:
+    needs: [lint]
     strategy:
       matrix:
         include:
@@ -26,7 +27,7 @@ jobs:
           - image: ubuntu-2204-ansible
             playbook: plugins.yml
 
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@DOPS-6154 # v1.0.23
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit
     with:
       image: "${{ matrix.image }}"
@@ -35,5 +36,5 @@ jobs:
   tag:
     needs: [test]
     if: ${{ github.ref == 'refs/heads/main' }}
-    uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@73ca257449ebfbcf967334d0e002a67d840c2288 # v1.0.23
+    uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit

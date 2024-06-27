@@ -1,16 +1,18 @@
 ---
 
 # Install Jenkins
-- include_tasks: install-jenkins.yml
+- name: Install jenkins server
+  ansible.builtin.include_tasks: install-jenkins.yml
 
 # Configure Jenkins init settings.
-- include_tasks: settings.yml
+- name: Configure jenkins
+  ansible.builtin.include_tasks: settings.yml
 
 # Make sure Jenkins starts, then configure Jenkins.
 - name: Ensure Jenkins is started and runs on startup.
-  ansible.builtin.service: 
-    name: jenkins 
-    state: started 
+  ansible.builtin.service:
+    name: jenkins
+    state: started
     enabled: yes
 
 - name: Wait for Jenkins to start up before proceeding.
@@ -33,6 +35,7 @@
   ansible.builtin.get_url:
     url: "http://{{ jenkins_hostname }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}/jnlpJars/jenkins-cli.jar"
     dest: "{{ jenkins_jar_location }}"
+    mode: "0600"
   register: jarfile_get
   until: "'OK' in jarfile_get.msg or '304' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
   retries: 5
@@ -45,4 +48,5 @@
     state: absent
 
 # Update Jenkins and install configured plugins.
-- include_tasks: plugins.yml    
+- name: Setup jenkins plugins
+  ansible.builtin.include_tasks: plugins.yml

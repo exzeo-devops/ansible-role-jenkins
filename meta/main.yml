@@ -13,6 +13,6 @@ galaxy_info:
   - name: Debian
     versions:
     - all
-    
+
   galaxy_tags:
     - jenkins
