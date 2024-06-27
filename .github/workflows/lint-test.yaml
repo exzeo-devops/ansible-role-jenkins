@@ -27,12 +27,13 @@ jobs:
             playbook: plugins.yml
 
     uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@DOPS-6154 # v1.0.23
+    secrets: inherit
     with:
       image: "${{ matrix.image }}"
       playbook: "${{ matrix.playbook }}"
 
   tag:
-    needs: [lint]
+    needs: [test]
     if: ${{ github.ref == 'refs/heads/main' }}
     uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@73ca257449ebfbcf967334d0e002a67d840c2288 # v1.0.23
     secrets: inherit
