@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   lint:
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@3c5e23942b4dbc4095b5841c4ac0b6ba44086f77 # v1.0.23
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@DOPS-6154 # v1.0.23
     secrets: inherit
 
   tag:
