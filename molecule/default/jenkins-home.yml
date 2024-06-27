@@ -1,0 +1,29 @@
+---
+- name: Install
+  hosts: all
+
+  vars:
+    jenkins_home: /tmp/jenkins
+
+  roles:
+    - role: exzeo.java
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
+  post_tasks:
+    - name: Verify JENKINS_HOME is correct.
+      ansible.builtin.stat:
+        path: "{{ jenkins_home }}/config.xml"
+      register: jenkins_home_config
+
+    - name: Fail if Jenkins config file doesn't exist.
+      ansible.builtin.fail:
+      when: not jenkins_home_config.stat.exists
+
+    - name: Ensure Jenkins is running.
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080/"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1

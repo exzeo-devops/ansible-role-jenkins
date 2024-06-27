@@ -33,5 +33,9 @@ rules:
   octal-values:
     forbid-explicit-octal: true
     forbid-implicit-octal: true
+  quoted-strings:
+    quote-type: double
+    required: false
+    allow-quoted-quotes: true
   trailing-spaces: disable
   truthy: disable

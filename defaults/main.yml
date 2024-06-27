@@ -1,6 +1,13 @@
 ---
-# Optional method of pinning a specific version of Jenkins
-jenkins_version: "2.401.3"
+# Optional method of pinning a specific version of Jenkins and/or overriding the
+# default Jenkins packaging URL.
+# jenkins_version: "1.644"
+# jenkins_pkg_url: "https://www.example.com"
+
+# Change this to `latest` to update Jenkins if a newer version is available.
+jenkins_package_state: present
+
+jenkins_prefer_lts: true
 
 jenkins_connection_delay: 5
 jenkins_connection_retries: 60
@@ -10,7 +17,7 @@ jenkins_http_port: 8080
 jenkins_jar_location: /opt/jenkins-cli.jar
 jenkins_url_prefix: ""
 jenkins_options: ""
-jenkins_java_options: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+jenkins_java_options: "-Djenkins.install.runSetupWizard=false"
 
 # Plugin list can use the plugin name, or a name/version dict.
 jenkins_plugins: []

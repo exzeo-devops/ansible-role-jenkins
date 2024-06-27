@@ -3,6 +3,14 @@ repos:
   - repo: meta
     hooks:
       - id: check-useless-excludes
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.28.4
+    hooks:
+      - id: check-github-workflows
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
   - repo: https://github.com/pre-commit/pre-commit-hooks.git
     rev: v4.6.0
     hooks:
@@ -10,10 +18,11 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
       - id: fix-byte-order-marker
-      - id: check-executables-have-shebangs
       - id: check-merge-conflict
-      - id: debug-statements
-        language_version: python3
+      - id: check-yaml
+      - id: detect-aws-credentials
+      - id: detect-private-key
+
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
     hooks:

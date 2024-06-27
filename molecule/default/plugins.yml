@@ -6,7 +6,7 @@
     jenkins_plugins:
       - greenballs
       - {name: cloudbees-folder, version: 6.795.v3e23d3c6f194}
-    jenkins_home: /tmp/jenkins
+    jenkins_home: /var/lib/jenkins
     jenkins_plugin_timeout: 120
 
   roles:
@@ -27,7 +27,7 @@
       ansible.builtin.command: "ls {{ jenkins_home }}/plugins"
       register: plugins_contents
       changed_when: false
-      tags: ['skip_ansible_lint']
+      tags: ["skip_ansible_lint"]
 
     - name: Verify greenballs plugin exists.
       ansible.builtin.stat:
@@ -47,9 +47,11 @@
       ansible.builtin.fail:
       when: not folder_plugin.stat.exists
 
-    - name: Check if Jenkins is running.
+    - name: Ensure Jenkins is running.
       ansible.builtin.uri:
         url: "http://127.0.0.1:8080/"
-        status_code:
-          - 200
-          - 403
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1

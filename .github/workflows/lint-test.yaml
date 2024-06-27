@@ -6,26 +6,40 @@ on:
     branches:
       - main
     paths-ignore:
-      - '.github/**'
+      - ".github/**"
 
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
   lint:
+    name: Check for ansible linting issues
     uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit
 
   test:
+    name: Run ansible molecule testing
     needs: [lint]
     strategy:
       matrix:
         include:
-          - image: ubuntu-2204-ansible
+          - image: ubuntu-2404-ansible
             playbook: converge.yml
           - image: ubuntu-2204-ansible
+            playbook: converge.yml
+          - image: ubuntu-2004-ansible
+            playbook: converge.yml
+          - image: ubuntu-2204-ansible
+            playbook: http-port.yml
+          - image: ubuntu-2204-ansible
+            playbook: jenkins-home.yml
+          - image: ubuntu-2204-ansible
+            playbook: jenkins-version.yml
+          - image: ubuntu-2204-ansible
             playbook: plugins.yml
+          - image: ubuntu-2204-ansible
+            playbook: prefix.yml
 
     uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit
@@ -35,6 +49,6 @@ jobs:
 
   tag:
     needs: [test]
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == "refs/heads/main" }}
     uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
     secrets: inherit

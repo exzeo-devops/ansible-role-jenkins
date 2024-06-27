@@ -1,0 +1,20 @@
+---
+- name: Install
+  hosts: all
+
+  vars:
+    jenkins_http_port: 8081
+
+  roles:
+    - role: exzeo.java
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
+  post_tasks:
+    - name: Ensure Jenkins is running on the specified port.
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ jenkins_http_port }}"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
