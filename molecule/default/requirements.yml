@@ -3,4 +3,4 @@ collections:
 
 roles:
   - name: exzeo.java
-    src: git+git@github.com:exzeo-devops/ansible-role-java.git
+    src: https://github.com/exzeo-devops/ansible-role-java.git
