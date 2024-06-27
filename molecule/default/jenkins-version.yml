@@ -14,10 +14,10 @@
       ansible.builtin.command: jenkins --version
       changed_when: false
       register: jenkins_current_version
-      tags: ['skip_ansible_lint']
+      tags: ["skip_ansible_lint"]
 
     - name: Print installed Jenkins package information.
-      ansible.builtin.debug: 
+      ansible.builtin.debug:
         var: jenkins_current_version
 
     - name: Fail if version doesn't match what we wanted.
