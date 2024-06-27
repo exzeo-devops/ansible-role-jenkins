@@ -13,8 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ansible-checks:
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-checks.yaml@73ca257449ebfbcf967334d0e002a67d840c2288 # v1.0.23
+  lint:
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@df7b4a6520bf1392403eaa77e24bf803213eca3a # v1.0.23
     secrets: inherit
 
   tag:
