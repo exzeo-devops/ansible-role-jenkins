@@ -18,10 +18,18 @@ jobs:
     secrets: inherit
 
   test:
+    strategy:
+      matrix:
+        include:
+          - image: ubuntu-2204-ansible
+            playbook: converge.yml
+          - image: ubuntu-2204-ansible
+            playbook: plugins.yml
+
     uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@DOPS-6154 # v1.0.23
     with:
-      image: "ubuntu-2404-ansible"
-      playbook: "converge.yml"
+      image: "${{ matrix.image }}"
+      playbook: "${{ matrix.playbook }}"
 
   tag:
     needs: [lint]

@@ -1,6 +1,0 @@
-collections:
-  - name: community.general
-
-roles:
-  - name: exzeo.java
-    src: git+git@github.com:exzeo-devops/ansible-role-java.git
