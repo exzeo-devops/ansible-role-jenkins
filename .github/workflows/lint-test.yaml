@@ -18,7 +18,7 @@ jobs:
     secrets: inherit
 
   test:
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-test.yaml@DOPS-6154 # v1.0.23
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@DOPS-6154 # v1.0.23
     with:
       image: "ubuntu-2404-ansible"
       playbook: "converge.yml"
