@@ -9,7 +9,7 @@ driver:
 
 platforms:
   - name: instance
-    image: ghcr.io/exzeo-devops/docker-images/MOLECULE_IMAGE:latest
+    image: ghcr.io/exzeo-devops/docker-images/${MOLECULE_IMAGE:-ubuntu-2404-ansible}:latest
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
