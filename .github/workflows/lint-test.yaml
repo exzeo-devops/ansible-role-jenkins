@@ -17,9 +17,14 @@ jobs:
     uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@DOPS-6154 # v1.0.23
     secrets: inherit
 
+  test:
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-test.yaml@DOPS-6154 # v1.0.23
+    with:
+      image: "ubuntu-2404-ansible"
+      playbook: "converge.yml"
+
   tag:
     needs: [lint]
     if: ${{ github.ref == 'refs/heads/main' }}
     uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@73ca257449ebfbcf967334d0e002a67d840c2288 # v1.0.23
     secrets: inherit
-    
