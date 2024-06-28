@@ -59,3 +59,10 @@ jenkins_proxy_noproxy:
 
 jenkins_init_folder: "/etc/systemd/system/jenkins.service.d"
 jenkins_init_file: "{{ jenkins_init_folder }}/override.conf"
+
+jenkins_required_packages:
+  - curl
+  - apt-transport-https
+  - gnupg
+
+jenkins_additional_packages: []

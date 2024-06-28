@@ -1,36 +1,36 @@
 ---
-- name: settings | Check if jenkins_init_folder exists.
+- name: settings | Check if Jenkins init folder exists
   ansible.builtin.stat:
     path: "{{ jenkins_init_folder }}"
   register: jenkins_init_folder_stat
 
-- name: settings | Ensure jenkins_init_folder exists.
+- name: settings | Ensure Jenkins init folder exists
   ansible.builtin.file:
     path: "{{ jenkins_init_folder }}"
     state: directory
     mode: "0644"
   when: not jenkins_init_folder_stat.stat.exists
 
-- name: settings | Check if jenkins_init_file exists.
+- name: settings | Check if Jenkins init file exists
   ansible.builtin.stat:
     path: "{{ jenkins_init_file }}"
   register: jenkins_init_file_stat
 
-- name: settings | Ensure jenkins_init_file exists.
+- name: settings | Ensure Jenkins init file exists
   ansible.builtin.file:
     path: "{{ jenkins_init_file }}"
     state: touch
     mode: "0644"
   when: not jenkins_init_file_stat.stat.exists
 
-- name: settings | Populate jenkins_init_file with service tag.
+- name: settings | Populate Jenkins init file with service tag
   ansible.builtin.copy:
     dest: "{{ jenkins_init_file }}"
     content: "[Service]"
     mode: "0644"
   when: not jenkins_init_file_stat.stat.exists
 
-- name: settings | Modify variables in init file.
+- name: settings | Modify variables in init file
   ansible.builtin.lineinfile:
     dest: "{{ jenkins_init_file }}"
     insertafter: '^Environment="{{ item.option }}='
@@ -41,7 +41,7 @@
   with_items: "{{ jenkins_init_changes }}"
   register: jenkins_init_prefix
 
-- name: settings | Ensure jenkins_home exists @ {{ jenkins_home }}
+- name: settings | Ensure Jenkins home directory exists
   ansible.builtin.file:
     path: "{{ jenkins_home }}"
     state: directory
@@ -50,7 +50,7 @@
     mode: u+rwx
     follow: true
 
-- name: settings | Immediately restart Jenkins on init config changes.
+- name: settings | Restart Jenkins immediately on init config changes
   ansible.builtin.systemd:
     name: jenkins
     state: restarted
@@ -58,7 +58,7 @@
   when: jenkins_init_prefix.changed
   tags: ["skip_ansible_lint"]
 
-- name: settings | Create custom init scripts directory.
+- name: settings | Create custom init scripts directory
   ansible.builtin.file:
     path: "{{ jenkins_home }}/init.groovy.d"
     state: directory
@@ -66,7 +66,7 @@
     group: "{{ jenkins_process_group }}"
     mode: "0775"
 
-- name: settings | Configure proxy config for Jenkins
+- name: settings | Configure proxy settings for Jenkins
   ansible.builtin.template:
     src: proxy.xml.j2
     dest: "{{ jenkins_home }}/proxy.xml"
@@ -78,10 +78,10 @@
     - jenkins_proxy_host | length > 0
     - jenkins_proxy_port | length > 0
 
-- name: settings | Trigger handlers immediately in case Jenkins was installed
+- name: settings | Flush handlers immediately if Jenkins was installed
   ansible.builtin.meta: flush_handlers
 
-- name: settings | Immediately restart Jenkins on http or user changes.
+- name: settings | Restart Jenkins immediately on HTTP or user changes
   ansible.builtin.service:
     name: jenkins
     state: restarted
@@ -90,4 +90,3 @@
     or (jenkins_http_config is defined and jenkins_http_config.changed)
     or (jenkins_home_config is defined and jenkins_home_config.changed)
     or (jenkins_proxy_config is defined and jenkins_proxy_config.changed)
-  tags: ["skip_ansible_lint"]

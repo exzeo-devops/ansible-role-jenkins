@@ -1,19 +1,18 @@
 ---
 # jenkins_plugin module doesn't support password files.
-- name: plugins | Get Jenkins admin password from file.
+- name: plugins | Retrieve Jenkins admin password from file
   ansible.builtin.slurp:
     src: "{{ jenkins_admin_password_file }}"
   register: adminpasswordfile
   no_log: true
   when: jenkins_admin_password_file | default(false)
-  tags: ["skip_ansible_lint"]
 
-- name: plugins | Set Jenkins admin password fact.
+- name: plugins | Set Jenkins admin password fact
   ansible.builtin.set_fact:
     jenkins_admin_password: "{{ adminpasswordfile['stdout'] | default(jenkins_admin_password) }}"
   no_log: true
 
-- name: plugins | Create Jenkins updates directory.
+- name: plugins | Create Jenkins updates directory
   ansible.builtin.file:
     path: "{{ jenkins_home }}/updates"
     state: directory
@@ -21,7 +20,7 @@
     group: "{{ jenkins_process_group }}"
     mode: "0600"
 
-- name: plugins | Download current plugin updates from Jenkins update site.
+- name: plugins | Download current plugin updates from Jenkins update site
   ansible.builtin.get_url:
     url: "{{ jenkins_updates_url }}/update-center.json"
     dest: "{{ jenkins_home }}/updates/default.json"
@@ -34,12 +33,12 @@
   retries: 3
   delay: 2
 
-- name: plugins | Remove first and last line from json file.
+- name: plugins | Remove first and last line from JSON file
   ansible.builtin.replace:
     path: "{{ jenkins_home }}/updates/default.json"
     regexp: "1d;$d"
 
-- name: plugins | Install Jenkins plugins using password.
+- name: plugins | Install Jenkins plugins using admin credentials
   community.general.jenkins_plugin:
     name: "{{ item.name | default(item) }}"
     version: "{{ item.version | default(omit) }}"
@@ -55,7 +54,6 @@
   with_items: "{{ jenkins_plugins }}"
   when: jenkins_admin_password | default(false)
   notify: Restart jenkins
-  tags: ["skip_ansible_lint"]
   register: plugin_result
   until: plugin_result is success
   retries: 3

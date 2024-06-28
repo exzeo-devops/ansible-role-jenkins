@@ -1,17 +1,15 @@
 ---
-- name: install | Ensure dependencies are installed.
+- name: install | Ensure Jenkins dependencies are installed
   ansible.builtin.apt:
-    name:
-      - curl
-      - apt-transport-https
-      - gnupg
-    state: present
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ jenkins_required_packages + (jenkins_additional_packages | default([])) }}"
   register: get_result
   until: get_result is success
   retries: 3
   delay: 2
 
-- name: install | Add Jenkins apt repository key.
+- name: install | Add Jenkins APT repository key
   ansible.builtin.get_url:
     url: "{{ jenkins_repo_key_url }}"
     dest: /etc/apt/trusted.gpg.d/jenkins.asc
@@ -22,7 +20,7 @@
   retries: 3
   delay: 2
 
-- name: install | Add Jenkins apt repository.
+- name: install | Add Jenkins APT repository
   ansible.builtin.apt_repository:
     repo: "{{ jenkins_repo_url }}"
     state: present
@@ -32,9 +30,8 @@
   until: get_result is success
   retries: 3
   delay: 2
-  tags: ["skip_ansible_lint"]
 
-- name: install | Download specific Jenkins version.
+- name: install | Download specific Jenkins version package
   ansible.builtin.get_url:
     url: "{{ jenkins_pkg_url }}/jenkins_{{ jenkins_version }}_all.deb"
     dest: "/tmp/jenkins_{{ jenkins_version }}_all.deb"
@@ -45,20 +42,20 @@
   delay: 2
   when: jenkins_version is defined
 
-- name: install | Check if we downloaded a specific version of Jenkins.
+- name: install | Verify specific Jenkins version package download
   ansible.builtin.stat:
     path: "/tmp/jenkins_{{ jenkins_version }}_all.deb"
   register: specific_version
   when: jenkins_version is defined
 
-- name: install | Install our specific version of Jenkins.
+- name: install | Install specific Jenkins version package
   ansible.builtin.apt:
     deb: "/tmp/jenkins_{{ jenkins_version }}_all.deb"
     state: present
   when: jenkins_version is defined and specific_version.stat.exists
   notify: Configure default users
 
-- name: install | Ensure Jenkins is installed.
+- name: install | Ensure Jenkins is installed
   ansible.builtin.apt:
     name: jenkins
     state: "{{ jenkins_package_state }}"
