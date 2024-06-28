@@ -1,0 +1,16 @@
+---
+- name: Install
+  hosts: all
+
+  roles:
+    - role: exzeo.java
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
+  post_tasks:
+
+    - name: Check if Jenkins is running.
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080/"
+        status_code:
+          - 200
+          - 403

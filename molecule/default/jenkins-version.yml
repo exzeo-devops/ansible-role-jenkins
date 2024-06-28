@@ -1,0 +1,25 @@
+---
+- name: Install
+  hosts: all
+
+  vars:
+    jenkins_version: "2.401.3"
+
+  roles:
+    - role: exzeo.java
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+
+  post_tasks:
+    - name: Check installed version of Jenkins.
+      ansible.builtin.command: jenkins --version
+      changed_when: false
+      register: jenkins_current_version
+      tags: ["skip_ansible_lint"]
+
+    - name: Print installed Jenkins package information.
+      ansible.builtin.debug:
+        var: jenkins_current_version
+
+    - name: Fail if version doesn't match what we wanted.
+      ansible.builtin.fail:
+      when: "jenkins_version not in jenkins_current_version.stdout"
