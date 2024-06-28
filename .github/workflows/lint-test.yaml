@@ -15,7 +15,7 @@ concurrency:
 jobs:
   lint:
     name: Check for ansible linting issues
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-lint.yaml@2a6726ee910787d06abd4d21121e64118e992349 # v1.0.25
     secrets: inherit
 
   test:
@@ -41,7 +41,7 @@ jobs:
           - image: ubuntu-2204-ansible
             playbook: prefix.yml
 
-    uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
+    uses: exzeo-devops/action-workflows/.github/workflows/ansible-tests.yaml@2a6726ee910787d06abd4d21121e64118e992349 # v1.0.25
     secrets: inherit
     with:
       image: "${{ matrix.image }}"
@@ -50,5 +50,5 @@ jobs:
   tag:
     needs: [test]
     if: ${{ github.ref == 'refs/heads/main' }}
-    uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@b91434ca4ac26be650666ce412f6764b07bec0dd # v1.0.24
+    uses: exzeo-devops/action-workflows/.github/workflows/github-tag.yaml@2a6726ee910787d06abd4d21121e64118e992349 # v1.0.25
     secrets: inherit
