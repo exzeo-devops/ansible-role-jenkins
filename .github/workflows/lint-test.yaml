@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
   
   # At 07:30 on day-of-month 1 in every 2nd month.
   schedule:
