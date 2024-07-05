@@ -18,7 +18,7 @@
     state: directory
     owner: "{{ jenkins_process_user }}"
     group: "{{ jenkins_process_group }}"
-    mode: "0600"
+    mode: "0755"
 
 - name: plugins | Download current plugin updates from Jenkins update site
   ansible.builtin.get_url:
@@ -26,7 +26,7 @@
     dest: "{{ jenkins_home }}/updates/default.json"
     owner: "{{ jenkins_process_user }}"
     group: "{{ jenkins_process_group }}"
-    mode: "0600"
+    mode: "0440"
   changed_when: false
   register: get_result
   until: get_result is success
