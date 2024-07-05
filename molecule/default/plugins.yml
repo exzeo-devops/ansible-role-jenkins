@@ -14,6 +14,15 @@
     - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
 
   post_tasks:
+    - name: Ensure Jenkins is running.
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080/"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 1
+
     - name: Verify JENKINS_HOME is correct.
       ansible.builtin.stat:
         path: "{{ jenkins_home }}/config.xml"
@@ -32,26 +41,29 @@
     - name: Verify greenballs plugin exists.
       ansible.builtin.stat:
         path: "{{ jenkins_home }}/plugins/greenballs.jpi"
+      until: greenballs_plugin is success
+      retries: 3
+      delay: 2
       register: greenballs_plugin
 
     - name: Fail if greenballs plugin file doesn't exist.
       ansible.builtin.fail:
+      until: greenballs_plugin is success
+      retries: 3
+      delay: 2
       when: not greenballs_plugin.stat.exists
 
     - name: Verify cloudbees-folder plugin exists.
       ansible.builtin.stat:
         path: "{{ jenkins_home }}/plugins/cloudbees-folder.jpi"
+      until: folder_plugin is success
+      retries: 3
+      delay: 2
       register: folder_plugin
 
     - name: Fail if cloudbees-folder plugin file doesn't exist.
       ansible.builtin.fail:
+      until: folder_plugin is success
+      retries: 3
+      delay: 2
       when: not folder_plugin.stat.exists
-
-    - name: Ensure Jenkins is running.
-      ansible.builtin.uri:
-        url: "http://127.0.0.1:8080/"
-        status_code: 200
-      register: result
-      until: result.status == 200
-      retries: 60
-      delay: 1
